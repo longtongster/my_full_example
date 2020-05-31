@@ -6,3 +6,6 @@ Created on Sun May 31 21:55:20 2020
 """
 
 from .reader_module.reader import hoi
+from .reader_module.reader import MyDataReader
+
+
