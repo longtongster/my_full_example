@@ -13,5 +13,5 @@ path = "./data/amazon_reviews_us_Gift_Card_v1_00.tsv.gz"
 if __name__ == '__main__':
     hoi()
     reader = MyDataReader(path)
-    print(reader.filename)
+    print(reader.path)
     
