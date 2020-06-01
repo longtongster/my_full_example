@@ -29,8 +29,13 @@ class MyDataReader:
         Opens a gzip file and reads the data from the file
         """
         
-        # bind a file to f via gzip
-        f = gzip.open(self.path,'rt', encoding='utf-8')
+        # Get extension from path
+        ext = os.path.splitext(self.path)[1]
+        if ext == '.gz':
+            # bind a file to f via gzip
+            f = gzip.open(self.path,'rt', encoding='utf-8')
+        else:
+            f = open(self.path, 'rt',encoding='utf-8')
         
         # create a csv reader and bind it to f
         reader = csv.reader(f, delimiter ='\t')
@@ -38,7 +43,6 @@ class MyDataReader:
         # Reader header if True
         if header:
             header = next(reader)
-            print(header)
         
         
         self.data=[]
@@ -53,15 +57,21 @@ class MyDataReader:
         Opens a gzip file and reads the data from the file
         """
         
-        # bind a file to f via gzip
-        f = gzip.open(self.path,'rt', encoding='utf-8')
+        # Get extension from path
+        ext = os.path.splitext(self.path)[1]
+        if ext == '.gz':
+            # bind a file to f via gzip
+            f = gzip.open(self.path,'rt', encoding='utf-8')
+        else:
+            f = open(self.path, 'rt',encoding='utf-8')
         
         # create a csv reader and bind it to f
         reader = csv.DictReader(f,delimiter='\t')
         
         # Reader header if True
-        if header:
-            header = next(reader)
+        #if header:
+        #    header = next(reader)
+        #    print(header)
         
         self.data=[]
         for line in reader:
