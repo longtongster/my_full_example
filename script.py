@@ -8,10 +8,16 @@ Created on Sun May 31 21:58:50 2020
 from my_package import hoi
 from my_package import MyDataReader
 
-path = "./data/amazon_reviews_us_Gift_Card_v1_00.tsv.gz"
+path1 = "./data/amazon_reviews_us_Gift_Card_v1_00.tsv.gz"
+path2 = "./data/test_no_header.txt"
 
 if __name__ == '__main__':
     hoi()
-    my_reader = MyDataReader(path)
-    print(my_reader.path)
+    my_reader1 = MyDataReader(path1)
+    print("my_reader1 works with path ",my_reader1.path)
     
+    # Reader of file with no header
+    my_reader2 = MyDataReader(path2)
+    print("my_reader2 works with path ",my_reader2.path)
+    names = ['header1','header2','header3']
+    my_reader2.DictReader(header=False,names=names)

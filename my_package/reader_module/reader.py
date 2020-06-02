@@ -27,9 +27,9 @@ class MyDataReader:
         self.data = None
         self.total = None
         
-    def csvReader(self, header=True):
+    def csvReader(self, header=True, names=None):
         """
-        Opens a gzip file and reads the data from the file
+        Opens a file and reads the data from the file
         """
         
         # Get extension from path
@@ -46,18 +46,23 @@ class MyDataReader:
         # Reader header if True
         if header:
             header = next(reader)
+            columns = header
+        else:
+            columns = names
         
         
         self.data=[]
         for line in reader:
             self.data.append(line)
+        
             
-        return self.data
         
     
-    def DictReader(self, header=True):
+    def DictReader(self, header=True, names=None):
         """
-        Opens a gzip file and reads the data from the file
+        Opens a file and reads the data from the file
+        parameters:
+            bla bla 
         """
         
         # Get extension from path
@@ -69,20 +74,22 @@ class MyDataReader:
             f = open(self.path, 'rt',encoding='utf-8')
         
         # create a csv reader and bind it to f
-        reader = csv.DictReader(f,delimiter='\t')
+        if header:
+            reader = csv.DictReader(f, delimiter = '\t')
+        else:
+        # If first line contains no headers these should be in the names
+        # argument
+            reader = csv.DictReader(f, delimiter = '\t', fieldnames= names)
         
-        # Reader header if True
-        #if header:
-        #    header = next(reader)
-        #    print(header)
         
         self.data=[]
         for line in reader:
             self.data.append(line)
             
+            
  
-    def DataFrame(self):
-        df = pd.DataFrame(self.data)
+    def DataFrame(self,*args,**kwargs):
+        df = pd.DataFrame(self.data,*args,**kwargs)
         return df
        
     def MySum(self, x, y):

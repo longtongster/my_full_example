@@ -15,12 +15,20 @@ Or run the command from the directory this file is in
 
 
 tips:
-    to test if something is equal to None remember to use 'var is None'
-    
+- to test if something is equal to None remember to use 'var is None'
+- use isinstance to check data types
+- use pytest.raises() to test for desired Error messages 
+- do tests with bad data, bounderies and normal cases (2 to 3 for each case)
+- TDD - Test driven development - write tests before the functions are written
+    - in this case we factor in the time to write tests
+
+
+todo:
+- I was not able to assert the error message in test_mysum_error
 """
 
 import pytest
-from reader import hoi, MyDataReader
+from reader import MyDataReader
 from collections import OrderedDict
 
 def test_dictreader_two_simple_rows():
@@ -64,12 +72,24 @@ def test_mysum_clean():
     test_reader = MyDataReader(path)
     test_reader.MySum(x,y)
     actual = test_reader.total
+    # pytest.approx() will also work on lists and numpy arrays
     expected = pytest.approx(0.3)
     message = "MyDataReader.MySum returned {0} instead of {1}".format(actual, expected)
     assert actual == expected , message  
     assert isinstance(actual, float), f"expected datatype is float"
     
     
+def test_mysum_error():
+    x = 10
+    y = "string"
+    path=None
     
-
+    test_reader = MyDataReader(path)
+    with pytest.raises(TypeError) as exc_info:
+            test_reader.MySum(x,y)
+    #I am not able to get the error messgae to work. I might do something wrong
+    #message = """unsupported operand type(s) for +: 'int' and 'str'"""
+    #print("ERROR MESSAGE",exc_info.value)
+    #assert exc_info.match(message)
+    
     
