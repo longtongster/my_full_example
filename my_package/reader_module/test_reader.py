@@ -56,6 +56,20 @@ def test_csvreader_two_simple_rows():
     message = "MyDataReader.data returned {0} instead of {1}".format(actual, expected)
     assert actual == expected , message   
             
+def test_mysum_clean():
+    # this test case shows how to make unit test for float variables
+    x = 0.1 + 0.1
+    y = 0.1
+    path=None
+    test_reader = MyDataReader(path)
+    test_reader.MySum(x,y)
+    actual = test_reader.total
+    expected = pytest.approx(0.3)
+    message = "MyDataReader.MySum returned {0} instead of {1}".format(actual, expected)
+    assert actual == expected , message  
+    assert isinstance(actual, float), f"expected datatype is float"
+    
+    
     
 
     

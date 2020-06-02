@@ -3,6 +3,8 @@
 Created on Sun May 31 21:56:29 2020
 
 @author: sacha
+
+Module contains a simple class that reads data from path and 
 """
 
 import csv
@@ -23,6 +25,7 @@ class MyDataReader:
     def __init__(self,path):
         self.path = path
         self.data = None
+        self.total = None
         
     def csvReader(self, header=True):
         """
@@ -82,3 +85,5 @@ class MyDataReader:
         df = pd.DataFrame(self.data)
         return df
        
+    def MySum(self, x, y):
+        self.total = x + y
