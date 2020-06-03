@@ -29,7 +29,8 @@ class MyDataReader:
         
     def csvReader(self, header=True, names=None):
         """
-        Opens a file and reads the data from the file
+        Opens a file and reads the data from the file and stores result in 
+        self.data
         """
         
         # Get extension from path
@@ -50,14 +51,11 @@ class MyDataReader:
         else:
             columns = names
         
-        
         self.data=[]
         for line in reader:
             self.data.append(line)
         
-            
-        
-    
+
     def DictReader(self, header=True, names=None):
         """
         Opens a file and reads the data from the file
@@ -81,16 +79,16 @@ class MyDataReader:
         # argument
             reader = csv.DictReader(f, delimiter = '\t', fieldnames= names)
         
-        
         self.data=[]
         for line in reader:
-            self.data.append(line)
-            
+            self.data.append(line)     
             
  
     def DataFrame(self,*args,**kwargs):
         df = pd.DataFrame(self.data,*args,**kwargs)
         return df
        
+        
     def MySum(self, x, y):
+        """function only created for pytests"""
         self.total = x + y

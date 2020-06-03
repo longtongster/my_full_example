@@ -23,6 +23,8 @@ Files to test must start with 'test_'. A test class must start with the name
 
 Flags:
     - x : pytest stops the first time it finds a failure
+    - k "Testpattern" : to run tests that meet the pattern e.g. "TestMyDataReader"
+    - k "Testpattern" : also allows logical operators
 
 1. store a test module in same dir as the module you want to test
 2. by convention call module test_<module name>
