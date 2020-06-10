@@ -6,3 +6,4 @@ This repository will serve as an exercise to:
 * Work with classes
 * Use version control
 * Use unit testing
+* attempting to use travis 
