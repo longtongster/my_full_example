@@ -46,6 +46,8 @@ expected to fail.
 
 EXCLUDING TESTS
 @pytest.mark.xfail()
+!pytest -rx  : will show the xfailed test and gives the reason if provided
+!pytest -rxs : shows xfailed and skip tests
 
 SKIPPING TESTS
 You can also use @pytest.mark.skipif(boolean expression)
@@ -131,8 +133,8 @@ class TestMyDataReader(object):
         
     # Example of test that can be written but will be skipped until the function
     # is finished.
-    @pytest.mark.xfail()
+    @pytest.mark.xfail(reason="method is new. Test to be constructed")
     def test_processamazon_clean(self):
-        pass
+        assert 1==-1
     
     
