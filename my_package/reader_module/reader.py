@@ -24,7 +24,8 @@ class MyDataReader:
     """
     def __init__(self,path):
         self.path = path
-        self.data = None
+        self.raw_data = None # should replace data
+        self.dataset = None # should be result of ProcessAmazon
         self.total = None
         
     def csvReader(self, header=True, names=None):
@@ -51,9 +52,9 @@ class MyDataReader:
         else:
             columns = names
         
-        self.data=[]
+        self.raw_data=[]
         for line in reader:
-            self.data.append(line)
+            self.raw_data.append(line)
         
 
     def DictReader(self, header=True, names=None):
@@ -61,8 +62,7 @@ class MyDataReader:
         Opens a file and reads the data from the file
         parameters:
             bla bla 
-        """
-        
+        """      
         # Get extension from path
         ext = os.path.splitext(self.path)[1]
         if ext == '.gz':
@@ -79,13 +79,36 @@ class MyDataReader:
         # argument
             reader = csv.DictReader(f, delimiter = '\t', fieldnames= names)
         
-        self.data=[]
+        self.raw_data=[]
         for line in reader:
-            self.data.append(line)     
+            self.raw_data.append(line)     
             
- 
+    def ProcessAmazon(self):
+        """
+        preprocessing specific for the Amazon gift card data set
+        """
+        
+        self.dataset = [d for d in self.raw_data if 'review_date' in d.keys()]
+        print(len(self.dataset))
+        
+        for d in self.dataset:
+            # Change fields to int for analysis
+            for field in ['helpful_votes','star_rating','total_votes']:
+                d[field] = int(d[field])
+            # Change fields to Boolean for analysis and filtering
+            for field in ['verified_purchase','vine']:
+                if d[field] == 'Y':
+                    d[field] = True
+                else:
+                    d[field] = False
+            # Take year element from date
+            # print(d['review_date'])
+            d['YearInt']=int(d['review_date'][:4])
+
+        
+    
     def DataFrame(self,*args,**kwargs):
-        df = pd.DataFrame(self.data,*args,**kwargs)
+        df = pd.DataFrame(self.raw_data,*args,**kwargs)
         return df
        
         

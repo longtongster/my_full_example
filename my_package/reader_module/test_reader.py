@@ -41,6 +41,15 @@ name followed by the function name.
     - in this case we factor in the time to write tests
 
 
+When Doing TDD you design tests before implementing the code. These tests are 
+expected to fail.
+
+EXCLUDING TESTS
+@pytest.mark.xfail()
+
+SKIPPING TESTS
+You can also use @pytest.mark.skipif(boolean expression)
+
 todo:
 - I was not able to assert the error message in test_mysum_error
 """
@@ -64,7 +73,7 @@ class TestMyDataReader(object):
     
         test_reader = MyDataReader(path)
         test_reader.DictReader()
-        actual = test_reader.data
+        actual = test_reader.raw_data
         expected =[OrderedDict([('header1', 'test11'), ('header', 'test12'),('header3', 'test13')]), 
                    OrderedDict([('header1', 'test21'), ('header', 'test22'), ('header3', 'test23')])]   
         message = "MyDataReader.data returned {0} instead of {1}".format(actual,expected)     
@@ -82,7 +91,7 @@ class TestMyDataReader(object):
     
         test_reader = MyDataReader(path)
         test_reader.csvReader()
-        actual = test_reader.data
+        actual = test_reader.raw_data
         expected = [['test11', 'test12', 'test13'], 
                     ['test21', 'test22', 'test23']]
         message = "MyDataReader.data returned {0} instead of {1}".format(actual, expected)
@@ -104,6 +113,10 @@ class TestMyDataReader(object):
     
     
     def test_mysum_error(self):
+        """
+        Here we test if the class MyDataReader raises an exception when the 
+        MySum method gets an integer and string as input
+        """
         x = 10
         y = "string"
         path=None
@@ -115,5 +128,11 @@ class TestMyDataReader(object):
         #message = """unsupported operand type(s) for +: 'int' and 'str'"""
         #print("ERROR MESSAGE",exc_info.value)
         #assert exc_info.match(message)
+        
+    # Example of test that can be written but will be skipped until the function
+    # is finished.
+    @pytest.mark.xfail()
+    def test_processamazon_clean(self):
+        pass
     
     
