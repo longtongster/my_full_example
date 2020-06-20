@@ -4,6 +4,8 @@ Created on Mon Jun  1 09:36:09 2020
 
 @author: sacha
 
+The code is based on the datacamp course on unit testing. 
+
 In order to run pytest from the my_full_package directory run the command:
 !pytest ./my_package/reader_module/test_reader.py
 
@@ -22,9 +24,16 @@ Files to test must start with 'test_'. A test class must start with the name
 'Test'. A test function needs to start with 'test_'
 
 Flags:
-    - x : pytest stops the first time it finds a failure
-    - k "Testpattern" : to run tests that meet the pattern e.g. "TestMyDataReader"
-    - k "Testpattern" : also allows logical operators
+    -x : pytest stops the first time it finds a failure
+    -k "Testpattern" : to run tests that meet the pattern e.g. "TestMyDataReader"
+    -k "Testpattern" : also allows logical operators
+    -v               : more verbose output per test
+
+You can also mark tests using fixtures  @pytest.mark.database_access. Here the 
+test is allocated to a category database_access. run 
+!pytest -m database_access : to run all tests with mark database_access
+
+PLEASE NOTE: you must use " instead of ' in combination with the -x flag.
 
 1. store a test module in same dir as the module you want to test
 2. by convention call module test_<module name>
@@ -52,11 +61,17 @@ EXCLUDING TESTS
 SKIPPING TESTS
 You can also use @pytest.mark.skipif(boolean expression)
 
+TESTING WITH INPUT FILE
+changes process to:
+setup -> assert -> teardown
+For this you can use @pytest.fixture
+
 todo:
 - I was not able to assert the error message in test_mysum_error
 """
 
 import pytest
+import os
 from reader import MyDataReader
 from collections import OrderedDict
 
@@ -64,7 +79,7 @@ class TestMyDataReader(object):
     """
     Test class to test the MyDataReader class
     """
-    
+    @pytest.mark.sacha
     def test_dictreader_two_simple_rows(self):
         # create simple test file
         path = "test.txt"
@@ -81,7 +96,7 @@ class TestMyDataReader(object):
         message = "MyDataReader.data returned {0} instead of {1}".format(actual,expected)     
         assert actual == expected, message
 
-
+    @pytest.mark.sacha
     def test_csvreader_two_simple_rows(self):
         # create simple test file
         path = "test.txt"
@@ -113,6 +128,20 @@ class TestMyDataReader(object):
         assert actual == expected , message  
         assert isinstance(actual, float), f"expected datatype is float"
     
+
+    def test_mysum_add_ints(self):
+        """
+        test if two int return the result of 2+3=5
+        """
+        test_reader = MyDataReader(None)
+        test_reader.MySum(2,5)
+        print(test_reader.total)
+        actual = test_reader.total
+        expected = 7
+        message = "MyDataReader.MySum returned {0} instaed of {1}".format(actual,expected)
+        assert actual == expected, message
+        assert isinstance(actual, int), f"expected datatype is <class 'int'>  not {type(actual)}"
+        
     
     def test_mysum_error(self):
         """
@@ -136,5 +165,55 @@ class TestMyDataReader(object):
     @pytest.mark.xfail(reason="method is new. Test to be constructed")
     def test_processamazon_clean(self):
         assert 1==-1
+
+
+    def test_csvreader_two_simple_rows_fixture(self,raw_data_file):
+        # create simple test file
+        path = raw_data_file
+        test_reader = MyDataReader(path)
+        test_reader.csvReader()
+        actual = test_reader.raw_data
+        expected = [['test11', 'test12', 'test13'], 
+                    ['test21', 'test22', 'test23']]
+        message = "MyDataReader.data returned {0} instead of {1}".format(actual, expected)
+        assert actual == expected , message   
+
+
     
-    
+    @pytest.fixture
+    def raw_data_file(self):
+        """
+        This fixture can be used for a similar type of test and can be used 
+        simplify or shorten the code used in the first two test functions. 
+        In the course they talk about the using the tempdir for even better 
+        code
+        """
+        raw_data_file_path = 'raw_data_file.txt'
+        #clean_data_file_path = 'clearn_data_file.txt'
+        
+        with open(raw_data_file_path, 'w') as f:
+            f.write("header1\theader\theader3\n")
+            f.write("test11\ttest12\ttest13\n")
+            f.write("test21\ttest22\ttest23")
+        
+        yield raw_data_file_path
+        
+        os.remove(raw_data_file_path)
+        
+    @pytest.mark.parametrize("test_set", [(1,2),(2,2)])    
+    def test_mysum_normal_cases(self,test_set):
+        """
+        Example of parameterized test
+        
+        """
+        test_reader = MyDataReader(None)
+        test_reader.MySum(test_set[0],test_set[1])
+        print(test_reader.total)
+        actual = test_reader.total
+        expected = test_set[0] + test_set[1]
+        message = "MyDataReader.MySum returned {0} instaed of {1}".format(actual,expected)
+        assert actual == expected, message
+        assert isinstance(actual, int), f"expected datatype is <class 'int'>  not {type(actual)}"
+
+
+        
